@@ -1,66 +1,81 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login | School ERP</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background: linear-gradient(135deg, #4e73df 10%, #224abe 100%); height: 100vh; display: flex; align-items: center; }
-        .login-card { width: 100%; max-width: 400px; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); background: white; margin: auto; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Student Admission</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container d-flex justify-content-center">
-    <div class="login-card">
-        <h3 class="text-center mb-4 text-primary">School ERP Login</h3>
-        <form id="loginForm">
-            <div class="mb-3">
-                <label class="form-label">Username</label>
-                <input type="text" id="user" class="form-control" placeholder="admin" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Password</label>
-                <input type="password" id="pass" class="form-control" placeholder="••••••••" required>
-            </div>
-            <button type="submit" id="loginBtn" class="btn btn-primary w-100">Login</button>
-        </form>
-        <div id="msg" class="text-danger mt-3 text-center"></div>
-    </div>
-</div>
+<h2>Student Admission Form</h2>
 
-<script src="assets/js/config.js"></script>
-<script>
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('loginBtn');
-        const msg = document.getElementById('msg');
-        btn.disabled = true;
-        btn.innerText = "Checking...";
+<form id="admissionForm">
 
-        fetch(CONFIG.API_URL, {
-            method: 'POST',
-            body: JSON.stringify({
-                action: "checkLogin",
-                user: document.getElementById('user').value,
-                pass: document.getElementById('pass').value
-            })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === "success") {
-                localStorage.setItem('isLoggedIn', 'true');
-                window.location.href = "dashboard.html";
-            } else {
-                msg.innerText = "Galat Username ya Password!";
-            }
-        })
-        .catch(err => msg.innerText = "Connection Error!")
-        .finally(() => {
-            btn.disabled = false;
-            btn.innerText = "Login";
-        });
-    });
-</script>
+  <input type="date" id="doa" required>
+  <input type="text" id="admno" placeholder="Admission No" required>
+  <input type="text" id="rollno" placeholder="Online Roll No">
+
+  <input type="text" id="name" placeholder="Student Name" required>
+  <input type="date" id="dob">
+
+  <input type="text" id="father" placeholder="Father Name">
+  <input type="text" id="mother" placeholder="Mother Name">
+
+  <select id="class" required>
+    <option value="">Select Class</option>
+    <option>LKG</option>
+    <option>UKG</option>
+    <option>1ST</option>
+    <option>2ND</option>
+    <option>3RD</option>
+    <option>4TH</option>
+    <option>5TH</option>
+    <option>6TH</option>
+    <option>7TH</option>
+    <option>8TH</option>
+    <option>9TH</option>
+    <option>10TH</option>
+    <option>11TH</option>
+    <option>12TH</option>
+  </select>
+
+  <input type="text" id="address" placeholder="Address">
+  <input type="text" id="cast" placeholder="Cast Name">
+  <input type="text" id="category" placeholder="Category">
+  <input type="text" id="district" placeholder="District">
+  <input type="text" id="pincode" placeholder="Pin Code">
+
+  <input type="text" id="adharStudent" placeholder="Adhar Student">
+  <input type="text" id="adharFather" placeholder="Adhar Father">
+  <input type="text" id="adharMother" placeholder="Adhar Mother">
+
+  <input type="text" id="mobile" placeholder="Mobile No">
+  <input type="text" id="school" placeholder="Previous School">
+  <input type="text" id="subject" placeholder="Subject">
+  <input type="text" id="medium" placeholder="Medium">
+
+  <select id="formupld">
+    <option>DONE</option>
+    <option>PENDING</option>
+  </select>
+
+  <select id="fees">
+    <option>RECEIVED</option>
+    <option>PENDING</option>
+  </select>
+
+  <label>Student Photo</label>
+  <input type="file" id="photo" accept="image/*" required>
+
+  <label>Student Signature</label>
+  <input type="file" id="sign" accept="image/*" required>
+
+  <button type="submit">Add Student</button>
+</form>
+
+<button onclick="exportExcel()">Download Excel</button>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
