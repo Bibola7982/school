@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Admission | Sunrise School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f7f6; padding: 40px 0; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header-bg { background: #4e73df; color: white; border-radius: 15px 15px 0 0; padding: 20px; }
+        .btn-primary { background: #4e73df; border: none; padding: 12px; }
+        .btn-primary:hover { background: #224abe; }
+    </style>
+</head>
+<body>
+
+<div class="container" style="max-width: 700px;">
+    <a href="dashboard.html" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
+
+    <div class="card">
+        <div class="header-bg text-center">
+            <h3 class="mb-0">Student Admission Form</h3>
+        </div>
+        <div class="card-body p-4">
+            <form id="admissionForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Registration ID</label>
+                        <input type="text" id="reg_id" class="form-control" placeholder="E.g. S-101" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Admission Date</label>
+                        <input type="date" id="adm_date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Student Name</label>
+                    <input type="text" id="student_name" class="form-control" placeholder="Bache ka poora naam" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Father's Name</label>
+                        <input type="text" id="father_name" class="form-control" placeholder="Pita ka naam" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Mobile Number</label>
+                        <input type="number" id="mobile" class="form-control" placeholder="10 digit number" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Class</label>
+                        <select id="class" class="form-select" required>
+                            <option value="">Select Class</option>
+                            <option>Nursery</option><option>LKG</option><option>UKG</option>
+                            <option>1st</option><option>2nd</option><option>3rd</option>
+                            <option>4th</option><option>5th</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Section</label>
+                        <input type="text" id="section" class="form-control" value="A">
+                    </div>
+                </div>
+
+                <div class="mb-3 text-center">
+                    <button type="submit" id="saveBtn" class="btn btn-primary w-100 mt-3">Confirm Admission</button>
+                </div>
+            </form>
+            <div id="status" class="text-center mt-2"></div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script>
+    // Security check: Agar login nahi hai toh wapis login page par bhejo
+    if(localStorage.getItem('isLoggedIn') !== 'true') window.location.href = "index.html";
+
+    // Set default date to today
+    document.getElementById('adm_date').valueAsDate = new Date();
+
+    document.getElementById('admissionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveBtn');
+        const status = document.getElementById('status');
+        
+        btn.disabled = true;
+        btn.innerText = "Saving to Sheets...";
+
+        // Data array jo Sheet ke columns se match karta hai
+        // Sequence: RegID, Date, Name, Class, Section, Father, Mobile, Status
+        const formData = [
+            document.getElementById('reg_id').value,
+            document.getElementById('adm_date').value,
+            document.getElementById('student_name').value,
+            document.getElementById('class').value,
+            document.getElementById('section').value,
+            document.getElementById('father_name').value,
+            document.getElementById('mobile').value,
+            "Active"
+        ];
+
+        fetch(CONFIG.API_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Apps Script bypass CORS
+            body: JSON.stringify({
+                action: "saveData",
+                sheetName: "students_db",
+                data: formData
+            })
+        })
+        .then(() => {
+            status.innerHTML = "<span class='text-success fw-bold'>✅ Admission successful! Data saved.</span>";
+            document.getElementById('admissionForm').reset();
+            document.getElementById('adm_date').valueAsDate = new Date();
+        })
+        .catch(err => {
+            status.innerHTML = "<span class='text-danger'>❌ Error saving data!</span>";
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerText = "Confirm Admission";
+        });
+    });
+</script>
+
+</body>
+</html><!-- Student Admission --><!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Admission | Sunrise School</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f4f7f6; padding: 40px 0; }
+        .card { border-radius: 15px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .header-bg { background: #4e73df; color: white; border-radius: 15px 15px 0 0; padding: 20px; }
+        .btn-primary { background: #4e73df; border: none; padding: 12px; }
+        .btn-primary:hover { background: #224abe; }
+    </style>
+</head>
+<body>
+
+<div class="container" style="max-width: 700px;">
+    <a href="dashboard.html" class="btn btn-sm btn-outline-secondary mb-3">← Back to Dashboard</a>
+
+    <div class="card">
+        <div class="header-bg text-center">
+            <h3 class="mb-0">Student Admission Form</h3>
+        </div>
+        <div class="card-body p-4">
+            <form id="admissionForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Registration ID</label>
+                        <input type="text" id="reg_id" class="form-control" placeholder="E.g. S-101" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Admission Date</label>
+                        <input type="date" id="adm_date" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Student Name</label>
+                    <input type="text" id="student_name" class="form-control" placeholder="Bache ka poora naam" required>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Father's Name</label>
+                        <input type="text" id="father_name" class="form-control" placeholder="Pita ka naam" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Mobile Number</label>
+                        <input type="number" id="mobile" class="form-control" placeholder="10 digit number" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Class</label>
+                        <select id="class" class="form-select" required>
+                            <option value="">Select Class</option>
+                            <option>Nursery</option><option>LKG</option><option>UKG</option>
+                            <option>1st</option><option>2nd</option><option>3rd</option>
+                            <option>4th</option><option>5th</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-bold">Section</label>
+                        <input type="text" id="section" class="form-control" value="A">
+                    </div>
+                </div>
+
+                <div class="mb-3 text-center">
+                    <button type="submit" id="saveBtn" class="btn btn-primary w-100 mt-3">Confirm Admission</button>
+                </div>
+            </form>
+            <div id="status" class="text-center mt-2"></div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/js/config.js"></script>
+<script>
+    // Security check: Agar login nahi hai toh wapis login page par bhejo
+    if(localStorage.getItem('isLoggedIn') !== 'true') window.location.href = "index.html";
+
+    // Set default date to today
+    document.getElementById('adm_date').valueAsDate = new Date();
+
+    document.getElementById('admissionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveBtn');
+        const status = document.getElementById('status');
+        
+        btn.disabled = true;
+        btn.innerText = "Saving to Sheets...";
+
+        // Data array jo Sheet ke columns se match karta hai
+        // Sequence: RegID, Date, Name, Class, Section, Father, Mobile, Status
+        const formData = [
+            document.getElementById('reg_id').value,
+            document.getElementById('adm_date').value,
+            document.getElementById('student_name').value,
+            document.getElementById('class').value,
+            document.getElementById('section').value,
+            document.getElementById('father_name').value,
+            document.getElementById('mobile').value,
+            "Active"
+        ];
+
+        fetch(CONFIG.API_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Apps Script bypass CORS
+            body: JSON.stringify({
+                action: "saveData",
+                sheetName: "students_db",
+                data: formData
+            })
+        })
+        .then(() => {
+            status.innerHTML = "<span class='text-success fw-bold'>✅ Admission successful! Data saved.</span>";
+            document.getElementById('admissionForm').reset();
+            document.getElementById('adm_date').valueAsDate = new Date();
+        })
+        .catch(err => {
+            status.innerHTML = "<span class='text-danger'>❌ Error saving data!</span>";
+        })
+        .finally(() => {
+            btn.disabled = false;
+            btn.innerText = "Confirm Admission";
+        });
+    });
+</script>
+
+</body>
+</html>
